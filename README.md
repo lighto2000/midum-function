@@ -1,6 +1,6 @@
 # get the midum of numbers
 
-> it's will remove all the element in list until the len of numbers be 1 or 2 and sum them togther 
+> it's will remove all the element in list until the len of list be 1 or 2 and sum them togther 
 
 
 ```python
