@@ -1,23 +1,62 @@
-# get the midum of numbers
+# Web scraping
 
-> it's will remove all the element in list until the len of list be 1 or 2 and sum them togther 
-
+> Web Scraping
 
 ```python
+import csv
+import requests
+from bs4 import BeautifulSoup
+from itertools import zip_longest
+url = 'https://wuzzuf.net/search/jobs/?q=python&a=navbg'
+connect = requests.get(url)
 
-from time import sleep
-def midum(the_list):
-    counter = 0
-    while len(the_list) > 2:
-        the_list.remove(the_list[0])
-        the_list.remove(the_list[-1])
-        counter+=1
-        print(the_list)
-        sleep(2)
-    print(the_list[0] + the_list[1])
-    print((the_list[0] + the_list[1]) / 2)
+content = connect.content
+
+soup = BeautifulSoup(content,'lxml')
+# job title
+titles_class = 'css-m604qf'
+jop_titles = soup.find_all('h2',{'class':titles_class})
+
+# company names 
+company_class ='css-17s97q8'
+company_name = soup.find_all('a',{'class':company_class})
+
+# time published 
+time_class_active = 'css-4c4ojb'
+time_published_active = soup.find_all('div',{'class':time_class_active})
+
+# time published not active 
+time_class_not_active ='css-do6t5g'
+time_published_not_active = soup.find_all('div',{'class':time_class_not_active})
 
 
-midum([1,2,3,4,2,25,6,7])
+# info 
+info_class = 'css-1ve4b75'
+info = soup.find_all('span',{'class':info_class})
 
+# skills 
+skills_class = 'css-nn640c'
+skills = soup.find_all('a',{'class':skills_class})
+
+lens = len(jop_titles)
+title = []
+skille = []
+company = []
+time_active = []
+all_info = []
+time_not_active = []
+for inofrmation in range(lens):
+    title.append(jop_titles[inofrmation].text)
+    company.append(company_name[inofrmation].text)
+    skille.append(skills[inofrmation].text)
+    all_info.append(info[inofrmation].text)
+    try:
+        time_active.append(time_published_active[inofrmation].text)
+        time_not_active.append(time_published_not_active[inofrmation].text)
+    except IndexError as a:
+        continue
+file_list = [title,company,time_active,time_not_active,skille,all_info]
+exported = zip_longest(*file_list)
+
+# you must insert data to file 
 ```
